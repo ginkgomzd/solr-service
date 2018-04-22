@@ -1,6 +1,6 @@
 
-this-dir := $(dir $(lastword $(MAKEFILE_LIST)))
-include $(this-dir)env-defaults.make
+include env-defaults.make
+include install.make
 
 zk-cmd := $(SOLR_BIN)/solr zk -z $(SOLR_HOST):9983
 

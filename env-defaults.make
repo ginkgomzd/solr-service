@@ -1,6 +1,4 @@
 
-this-dir := $(dir $(lastword $(MAKEFILE_LIST)))
-
 # set env vars if not already set
 export SOLR_HOST ?= localhost
 export SOLR_PORT ?= 8983
