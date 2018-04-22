@@ -1,5 +1,5 @@
 
-this-dir := $(shell cd $(dir $(lastword $(MAKEFILE_LIST))) && pwd)
+this-dir := $(dir $(lastword $(MAKEFILE_LIST)))
 
 # set env vars if not already set
 export SOLR_HOST ?= localhost
