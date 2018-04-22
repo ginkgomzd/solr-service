@@ -1,8 +1,6 @@
 
-include env-defaults.make
-include create-and-load.make
-
-this-dir := $(shell cd $(dir $(lastword $(MAKEFILE_LIST))) && pwd)
+this-dir := $(dir $(lastword $(MAKEFILE_LIST)))
+include $(this-dir)env-defaults.make
 
 zk-cmd := $(SOLR_BIN)/solr zk -z $(SOLR_HOST):9983
 
