@@ -13,7 +13,7 @@ ping:
 
 .PHONY: solr-start
 solr-start:
-	sudo service solr restart
+	sudo service solr start
 
 .PHONY: solr-stop
 solr-stop:
