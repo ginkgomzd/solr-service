@@ -1,0 +1,22 @@
+
+Patch solr init script to run in cloud-mode.
+Cloud mode is officially unsupported "in production".
+This is just because running an embedded zookeeper can have unintended consequences 
+when part of a zookeeper ensemble. 
+
+--- etc/init.d/solr	2016-01-25 06:02:15.000000000 -0500
++++ /etc/init.d/solr	2018-04-22 13:16:20.082156383 -0400
+@@ -63,9 +63,12 @@
+ fi
+ 
+ case "$1" in
+-  start|stop|restart|status)
++  stop|status)
+     SOLR_CMD="$1"
+     ;;
++  start|restart)
++    SOLR_CMD="$1 -c"
++    ;;
+   *)
+     echo "Usage: $0 {start|stop|restart|status}"
+     exit
