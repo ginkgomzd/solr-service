@@ -1,38 +1,68 @@
 
+include default.env
+
+define HALP
+
+- INSTALL SOLR -
+	This will download and install Solr.
+	As of right now, it does not configure for a production environment: merely a development or stage install.
+
+	Set env vars in env-defaults.env
+
+- PRINCIPAL TARGETS
+	- install
+	- uninstall
+	- downloads
+
+- CLOUD MODE - 
+	Set PATCH_FOR_CLOUD=true to install in cloud-mode.
+
+- ENSEMBLE SETUP -
+	Ensemble-ready (that's a thing, I think?). Installs "stand-alone" zookeeper for ensemble management.
+	Not used for a typical install.
+
+endef
+
+help:
+	$(info ${HALP})
+
 arch:
-	@[ -d arch ] || mkdir arch
+	mkdir arch
 
-# zookeeper:
-# thought we needed this, but stand-alone zookeeper only needed when setting up an "ensemble"
-dl-zk arch/zookeeper-$(ZK_RELEASE).tar.gz: | arch
-	curl http://mirrors.ibiblio.org/apache/zookeeper/stable/zookeeper-$(ZK_RELEASE).tar.gz > arch/zookeeper-$(ZK_RELEASE).tar.gz
-## END zookeeper
+define download-arch
+$(eval CURL_URL = $(if $(findstr zookeeper, ${@}), ${ZK_DISTRO_URL}, ${SOLR_DISTRO_URL} ) )
+curl ${CURL_URL} > ${@}
+endef
 
-.PHONY: dl-solr
-dl-solr: arch/solr-$(SOLR_RELEASE).tgz
-arch/solr-$(SOLR_RELEASE).tgz: | $(this)arch
-	curl http://$(APACHE_MIRROR)/lucene/solr/$(SOLR_RELEASE)/solr-$(SOLR_RELEASE).tgz > arch/solr-$(SOLR_RELEASE).tgz
+${SOLR_TAR} ${ZK_TAR}: | arch
+	$(download-arch)
 
-install_solr_service.sh: arch/solr-$(SOLR_RELEASE).tgz
-	tar xzf arch/solr-$(SOLR_RELEASE).tgz solr-$(SOLR_RELEASE)/bin/install_solr_service.sh --strip-components=2
+downloads: ${SOLR_TAR} ${ZK_TAR}
 
-###
-# Install solr service, but don't start (-n)
-# as of this writing, default options supplied just to document here
-.PHONY: install-solr
-install-solr: install_solr_service.sh
-	sudo bash ./install_solr_service.sh arch/solr-$(SOLR_RELEASE).tgz -n -i /opt -d /var/solr -u solr -s solr -p 8983 && \
-	sudo patch <init.d.solr.patch /etc/init.d/solr && sudo systemctl daemon-reload
+.PHONY: install_solr_service.sh
+install_solr_service.sh: downloads
+	rm ${@}
+	tar xzf ${SOLR_TAR} solr-$(SOLR_RELEASE)/bin/install_solr_service.sh --strip-components=2
 
-.PHONY: enable-cors
-enable-cors: solr-webapp/webapp/WEB-INF/web.xml
-		sudo cp solr-webapp/webapp/WEB-INF/web.xml $(SOLR_BIN)/../server/solr-webapp/webapp/WEB-INF/web.xml && \
-		sudo service solr restart
+define patch-for-cloud
+sudo patch <init.d.solr.patch /etc/init.d/solr
+# requires reload
+endef
 
-solr-webapp/webapp/WEB-INF/web.xml:
+install: downloads install-libmysql-java install_solr_service.sh
+	# Install solr service, but don't start (-n)
+	sudo bash ./install_solr_service.sh ${SOLR_TAR} -n -i /opt -d /var/solr -u solr -s solr -p 8983
+	$(if ${PATCH_FOR_CLOUD}, $(patch-for-cloud))
 
-.PHONY: uninstall-solr
-uninstall-solr:
+enable-cors: 
+	sudo cp solr-webapp/webapp/WEB-INF/web.xml $(SOLR_BIN)/../server/solr-webapp/webapp/WEB-INF/web.xml && \
+	sudo service solr restart
+
+.PHONY: install-libmysql-java
+install-libmysql-java:
+	dpkg -S libmysql-javas || sudo apt install libmysql-java
+
+uninstall:
 	@sudo service solr stop && \
 	sudo rm -rf /var/solr \
 		/opt/solr \
@@ -43,5 +73,5 @@ uninstall-solr:
 	sudo deluser --remove-home solr
 
 clean-downloads:
-	@rm -f arch/zookeeper-$(ZK_RELEASE).tar.gz
-	@rm -f arch/solr-$(SOLR_RELEASE).tar.gz
+	-rm -f ${ZK_TAR}
+	-rm -f ${SOLR_TAR}
