@@ -5,6 +5,6 @@ export SOLR_PORT ?= 8983
 export SOLR_BIN ?= /opt/solr/bin
 
 APACHE_MIRROR ?= apache.mesi.com.ar
-SOLR_RELEASE ?= 7.3.0
+SOLR_RELEASE ?= 8.0.0
 # not used:
-ZK_RELEASE ?= 3.4.10
+ZK_RELEASE ?= 3.4.14
