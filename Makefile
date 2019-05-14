@@ -39,3 +39,8 @@ list-collections: ping
 
 list-cores: ping
 	@${zk-cmd} ls /cores
+
+deploy-configset:
+	# // TODO: this sucks
+	sudo rsync -r configsets/ /var/solr/data/configsets/
+	sudo chown -R solr:solr /var/solr/data/configsets
