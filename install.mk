@@ -41,7 +41,7 @@ downloads: ${SOLR_TAR} ${ZK_TAR}
 
 .PHONY: install_solr_service.sh
 install_solr_service.sh: downloads
-	rm ${@}
+	-rm ${@}
 	tar xzf ${SOLR_TAR} solr-$(SOLR_RELEASE)/bin/install_solr_service.sh --strip-components=2
 
 define patch-for-cloud
