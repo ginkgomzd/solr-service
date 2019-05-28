@@ -1,5 +1,6 @@
 
-include default.env
+CONFIG_INCLUDES := conf/solr.conf
+include utils/configure-utils.mk
 
 zk-cmd := $(SOLR_BIN)/solr zk -z $(SOLR_HOST):9983
 
@@ -7,7 +8,7 @@ ping-solr-collections-cmd = curl http://$(SOLR_HOST):$(SOLR_PORT)/api/collection
 ping-solr-cmd = curl http://${SOLR_HOST}:${SOLR_PORT}/api/cores
 ping-solr = $(ping-solr-cmd) || false
 
-define HALP
+define HELP_TEXT
  - Wraps some Solr Service control commands -
  Configure varibales in default.env file.
 
@@ -16,8 +17,7 @@ define HALP
 TODO// ;-)
 endef
 
-help:
-	$(info ${HALP})
+include utils/help.mk
 
 install:
 	$(MAKE) -f install.mk install

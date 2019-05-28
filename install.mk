@@ -1,7 +1,8 @@
 
-include default.env
+CONFIG_INCLUDES := conf/solr.conf
+include utils/configure-utils.mk
 
-define HALP
+define HELP_TEXT
 
 - INSTALL SOLR -
 	This will download and install Solr.
@@ -23,8 +24,7 @@ define HALP
 
 endef
 
-help:
-	$(info ${HALP})
+include utils/help.mk
 
 arch:
 	mkdir arch
