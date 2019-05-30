@@ -53,11 +53,5 @@ deploy-configset:
 	sudo rsync -r configsets/ /var/solr/data/configsets/
 	sudo chown -R solr:solr /var/solr/data/configsets
 
-solr-tick:
-	cd ${WEB_ROOT} && php wp-content/plugins/msa-capitol-monitor/daemon/rebuild-indexes.php
-
-solr-cores:
-	cd ${WEB_ROOT} && php wp-content/plugins/msa-capitol-monitor/daemon/create-cores.php
-
 solr-status:
 	/opt/solr/bin/solr status
