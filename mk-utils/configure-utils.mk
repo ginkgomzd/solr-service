@@ -28,6 +28,8 @@
 #
 # # #
 
+CACHED_DG := ${.DEFAULT_GOAL}# ensure we don't interfere with the default goal
+
 # # #
 # Shell-escape spaces.
 # e.g. $(call escape-spaces, string with spaces)
@@ -45,14 +47,17 @@ include ${CONFIG_INCLUDES}
 %.conf: | ${this-dir}prompt-for-configs.sh-is-exec
 	${this-dir}prompt-for-configs.sh ${*}.tpl ${@}
 
-configure:
-	$(MAKE) -RrB ${CONFIG_INCLUDES}
-
 %-is-exec:
 	chmod a+x ${*}
+
+configure:
+	$(MAKE) -RrB ${CONFIG_INCLUDES}
 
 # # #
 # Shell command to replace {{TOKENs}} in a file
 # Copy a template and then replace the tokens in the copy.
 #
 REPLACE_TOKENS = perl -p -i -e 's%\{\{([^}]+)\}\}%defined $$ENV{$$1} ? $$ENV{$$1} : $$&%eg'
+
+.DEFAULT_GOAL := ${CACHED_DG}
+

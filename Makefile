@@ -1,6 +1,8 @@
 
 CONFIG_INCLUDES := conf/solr.conf conf/db.conf
-include utils/configure-utils.mk
+include mk-utils/configure-utils.mk
+include mk-utils/help.mk
+
 
 zk-cmd := $(SOLR_BIN)/solr zk -z $(SOLR_HOST):9983
 
@@ -10,14 +12,14 @@ ping-solr = $(ping-solr-cmd) || false
 
 define HELP_TEXT
  - Wraps some Solr Service control commands -
- Configure varibales in default.env file.
+ Configure variabales in default.env file.
 
  Install target invokes install.mk for lazy people.
 
 TODO// ;-)
 endef
 
-include utils/help.mk
+default: help
 
 install:
 	$(MAKE) -f install.mk install

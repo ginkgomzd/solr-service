@@ -1,8 +1,6 @@
 # # #
 # Define a target called, help.
 #
-# Will be your default target... unless you include this after your default target.
-#
 # Tries really hard to find text to output. Provides an (un)helpful default message.
 #
 # Override the file that will be output by setting the variable, README.
@@ -12,6 +10,8 @@
 # Provide HELP_TEXT as a variable if you do not want to use text from a file.
 #
 # # #
+
+CACHED_DG := ${.DEFAULT_GOAL}# don't mess with defualt goal
 
 README ?= README
 HELP_FILE = $(or $(wildcard ${README}.md),$(wildcard ${README}))
@@ -24,16 +24,19 @@ pandoc :=
 endif
 
 # Nota Bene:
-# compound-conditionals achieved by detecting false as an empty-string
+# compound-conditionals( $(and ...) ) achieved by detecting false as an empty-string
 # So, true is not-equal to empty:
-
+#
 help:
 ifdef HELP_TEXT
 	@ $(info ${HELP_TEXT})
-else ifneq (,$(and ${pandoc},$(wildcard ${HELP_FILE})))
+else ifneq (,$(and ${pandoc},$(wildcard ${HELP_FILE})))	# we can use pandoc and the file exists
 	@ pandoc -f markdown -t plain ${HELP_FILE}
-else ifeq (${HELP_FILE},$(wildcard ${HELP_FILE}))
+else ifeq (${HELP_FILE},$(wildcard ${HELP_FILE}))	# a file is configured and exists
 	@ cat ${HELP_FILE}
 else
-	$(info Use the source, Luke.)
+	$(info Use the source, Luke.)			# we tried our best, sorry
 endif
+
+.DEFAULT_GOAL := ${CACHED_DG}
+

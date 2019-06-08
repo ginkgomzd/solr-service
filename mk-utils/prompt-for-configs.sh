@@ -23,7 +23,7 @@
 #
 # # #
 
-printf '\nGenerating Configuration of %s.\n' "$1"
+printf '\nGenerating Configuration of %s.\n' "$2"
 printf 'Continue? (Y/N) [N]'
 read yes
 if ( [ "$yes" = 'n' ] || [ "$yes" = 'N' ] || [ -z "$yes" ] ); then
