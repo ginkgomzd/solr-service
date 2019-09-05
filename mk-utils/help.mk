@@ -15,7 +15,7 @@ CACHED_DG := ${.DEFAULT_GOAL}# don't mess with defualt goal
 
 README ?= README
 HELP_FILE = $(or $(wildcard ${README}.md),$(wildcard ${README}))
-HELP_FILE := $(or ${HELP_FILE},NOFILE) # because empty will cause erroneous checks later.
+HELP_FILE := $(or ${HELP_FILE},NOFILE)# because empty will cause erroneous checks later.
 
 pandoc != command -v pandoc 2>/dev/null
 
