@@ -1,6 +1,6 @@
 
-CONFIG_INCLUDES := conf/solr.conf
-include utils/configure-utils.mk
+AUTO_INCLUDE_CONFS := yes
+include mk-utils/configure-utils.mk
 
 define HELP_TEXT
 
@@ -24,7 +24,7 @@ define HELP_TEXT
 
 endef
 
-include utils/help.mk
+include mk-utils/help.mk
 
 arch:
 	mkdir arch

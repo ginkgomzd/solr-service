@@ -3,21 +3,12 @@ CONFIG_INCLUDES := conf/solr.conf conf/db.conf
 include mk-utils/configure-utils.mk
 include mk-utils/help.mk
 
-
 zk-cmd := $(SOLR_BIN)/solr zk -z $(SOLR_HOST):9983
 
 ping-solr-collections-cmd = curl http://$(SOLR_HOST):$(SOLR_PORT)/api/collections --fail 2>/dev/null 1>/dev/null
 ping-solr-cmd = curl http://${SOLR_HOST}:${SOLR_PORT}/api/cores
 ping-solr = $(ping-solr-cmd) || false
 
-define HELP_TEXT
- - Wraps some Solr Service control commands -
- Configure variabales in default.env file.
-
- Install target invokes install.mk for lazy people.
-
-TODO// ;-)
-endef
 
 default: help
 
