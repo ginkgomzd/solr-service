@@ -35,7 +35,7 @@ list-cores: ping
 
 %.xml:
 	cp ${*}.tpl ${@}
-	$(REPLACE_TOKENS) ${@}
+	$(REPLACE_TOKENS) -i ${@}
 
 ##
 # $(eval export DB_DATA_CONFIG_SCHEMA = $(shell cat $${CONFIGSET_TEMPLATE}conf/db-data-config-schema.xml))
