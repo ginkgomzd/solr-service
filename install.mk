@@ -51,7 +51,7 @@ endef
 
 install: downloads install-libmysql-java install_solr_service.sh
 	# Install solr service, but don't start (-n)
-	sudo bash ./install_solr_service.sh ${SOLR_TAR} -n -i /opt -d /var/solr -u solr -s solr -p 8983
+	sudo bash ./install_solr_service.sh ${SOLR_TAR} -n -i /opt -d /var/solr -u solr -s solr -p ${SOLR_PORT}
 	$(if ${PATCH_FOR_CLOUD}, $(patch-for-cloud))
 
 enable-cors: 
