@@ -1,7 +1,20 @@
 # solr-service
 
-install solr as a service
+This will download and install Solr.
+As of right now, it does not configure for a production environment: merely a development or stage install.
 
-This adapts (hacks) the solr development setup to run as a service. Solr does not support this configuration, and it may not be suitable for production. It does however, enable quickly deploying solr, for instance for staging and demo'ing a solr implementation under development.
+## Config
 
-NOTICE: This documentation is out of date.
+Set env vars in conf/solr.conf and conf/db.conf
+
+Interactive configuration should run on first invocation (if you have make-do installed).
+
+## Principal Targets
+
+ - install
+ - uninstall
+ - downloads
+
+ ## MSA ConfigSet
+
+ The target `deploy-configset` will generate and deploy the MSA schema and DataImport Handler.

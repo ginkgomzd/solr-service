@@ -1,30 +1,6 @@
 
-AUTO_INCLUDE_CONFS := yes
-include mk-utils/configure-utils.mk
-
-define HELP_TEXT
-
-- INSTALL SOLR -
-	This will download and install Solr.
-	As of right now, it does not configure for a production environment: merely a development or stage install.
-
-	Set env vars in env-defaults.env
-
-- PRINCIPAL TARGETS
-	- install
-	- uninstall
-	- downloads
-
-- CLOUD MODE - 
-	Set PATCH_FOR_CLOUD=true to install in cloud-mode.
-
-- ENSEMBLE SETUP -
-	Ensemble-ready (that's a thing, I think?). Installs "stand-alone" zookeeper for ensemble management.
-	Not used for a typical install.
-
-endef
-
-include mk-utils/help.mk
+include mdo-config.mk
+include mdo-help.mk
 
 arch:
 	mkdir arch

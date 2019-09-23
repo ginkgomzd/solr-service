@@ -1,7 +1,6 @@
 
-CONFIG_INCLUDES := conf/solr.conf conf/db.conf
-include mk-utils/configure-utils.mk
-include mk-utils/help.mk
+include mdo-config.mk
+include mdo-help.mk
 
 zk-cmd := $(SOLR_BIN)/solr zk -z $(SOLR_HOST):9983
 
