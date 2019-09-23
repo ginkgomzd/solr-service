@@ -38,15 +38,19 @@ enable-cors:
 install-libmysql-java:
 	dpkg -S libmysql-javas || sudo apt install libmysql-java
 
-uninstall:
-	@sudo service solr stop && \
-	sudo rm -rf /var/solr \
+stop-solr:
+	- sudo service solr stop;
+
+remove-rc.d: stop-solr
+	sudo update-rc.d -f solr remove
+
+uninstall: stop-solr remove-rc.d
+	- sudo rm -rf /var/solr \
 		/opt/solr \
 		/opt/solr-$(SOLR_RELEASE) \
 		/etc/init.d/solr \
 		/etc/default/solr.in.sh && \
-	sudo update-rc.d -f solr remove && \
-	sudo deluser --remove-home solr
+		sudo deluser --remove-home solr
 
 clean-downloads:
 	-rm -f ${ZK_TAR}
