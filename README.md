@@ -1,6 +1,7 @@
 # solr-service
 
-This will download and install Solr.
+This will download and install Solr and contains the schema configuration for MSA.
+
 As of right now, it does not configure for a production environment: merely a development or stage install.
 
 ## Config
