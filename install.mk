@@ -36,7 +36,7 @@ enable-cors:
 
 .PHONY: install-libmysql-java
 install-libmysql-java:
-	dpkg -S libmysql-javas || sudo apt install libmysql-java
+	dpkg -S libmysql-java || sudo apt install libmysql-java
 
 stop-solr:
 	- sudo service solr stop;
