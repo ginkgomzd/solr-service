@@ -25,7 +25,7 @@ sudo patch <init.d.solr.patch /etc/init.d/solr
 # requires reload
 endef
 
-install: downloads install-libmysql-java install_solr_service.sh
+install: downloads install_solr_service.sh | install-libmysql-java 
 	# Install solr service, but don't start (-n)
 	sudo bash ./install_solr_service.sh ${SOLR_TAR} -n -i /opt -d /var/solr -u solr -s solr -p ${SOLR_PORT}
 	$(if ${PATCH_FOR_CLOUD}, $(patch-for-cloud))
