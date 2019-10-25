@@ -1,8 +1,15 @@
 <entity dataSource="ds-db" name="legislation" query="
-        SELECT leg.id as legislation_id,session,state,title,abstract,sponsor_name,sponsor_url,external_id,status_standard_val,type,status_val,number,status_standardkey FROM legislation AS leg
-        WHERE leg.id IN (SELECT DISTINCT(entity_id) as id FROM client_settings as cs
-        INNER JOIN profile_match as pm ON cs.category=pm.pname AND cs.client_id = pm.client_id
-        WHERE cs.client_id = '${dataimporter.request.core_client_id}' AND type = 'category' AND isfrontactive= 1 and entity_type = 'legislation');">
+        select a.id as legislation_id, a.session, a.state, a.title, a.abstract, a.sponsor_name, a.sponsor_url, a.external_id, a.status_standard_val, a.type, a.status_val, a.number, a.status_standardkey, it.id as import_id, it.xml_import_timestamp
+from 
+(select leg.id, leg.session, leg.state, leg.title, leg.abstract, leg.sponsor_name, leg.sponsor_url, leg.external_id, leg.status_standard_val, leg.type, leg.status_val, leg.number, leg.status_standardkey, max(ib.id) as import_bills_id 
+from legislation leg
+join import_bills ib on leg.id = ib.document_id
+join import_table it on ib.import_table_id = it.id
+where it.client_id = '${dataimporter.request.core_client_id}' and it.entity_type='legislation'
+GROUP BY leg.id,leg.title
+) a 
+join import_bills ib on a.import_bills_id = ib.id
+join import_table it on ib.import_table_id = it.id;">
     <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${legislation.legislation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='legislation';"></entity>
     <entity dataSource="ds-db" name="entity_text" query="SELECT content as path FROM entity_text WHERE entity_text.entity_id = '${legislation.external_id}';">
         <entity name="file" dataSource="ds-file" processor="TikaEntityProcessor" url="${entity_text.path}" format="text" onError="skip">
@@ -17,11 +24,21 @@
         </entity>
     </entity>
 </entity>
-<entity dataSource="ds-db" name="regulation" query="SELECT regulation.id as regulation_id,state,agency_name,type,state_action_type,register_date FROM regulation
-                 LEFT JOIN hidden_bills as hb ON regulation.id = hb.bill_id AND entity_type = 'regulation' AND client_id = '${dataimporter.request.core_client_id}'
-                 WHERE regulation.id IN (SELECT DISTINCT(entity_id) as id FROM client_settings as cs
-                 INNER JOIN profile_match as pm ON cs.category=pm.pname AND cs.client_id = pm.client_id
-                 WHERE cs.client_id = '${dataimporter.request.core_client_id}' AND type = 'category' AND isfrontactive= 1 and entity_type = 'regulation') AND hidden_timestamp IS NULL;">
+<entity dataSource="ds-db" name="regulation" query="select a.id as regulation_id, a.state, a.agency_name, a.type, a.state_action_type, a.register_date, it.id as import_id, it.xml_import_timestamp
+from 
+(select reg.id, reg.state, reg.agency_name, reg.type, reg.state_action_type, reg.register_date, max(ib.id) as import_bills_id 
+from regulation reg
+join import_bills ib on reg.id = ib.document_id
+join import_table it on ib.import_table_id = it.id
+where it.client_id = '${dataimporter.request.core_client_id}' and it.entity_type='regulation'
+GROUP BY reg.id
+) a 
+join import_bills ib on a.import_bills_id = ib.id
+join import_table it on ib.import_table_id = it.id
+LEFT JOIN hidden_bills as hb ON a.id = hb.bill_id AND hb.entity_type = 'regulation' AND hb.client_id = '${dataimporter.request.core_client_id}'
+where a.id IN (SELECT DISTINCT(entity_id) as id FROM client_settings as cs 
+                        INNER JOIN profile_match as pm ON cs.category=pm.pname AND cs.client_id = pm.client_id 
+                        WHERE cs.client_id = '${dataimporter.request.core_client_id}' AND type = 'category' AND isfrontactive= 1 and entity_type = 'regulation') AND hb.hidden_timestamp IS NULL;">
     <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${regulation.regulation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='regulation';"></entity>
     <entity dataSource="ds-db" name="entity_text" query="SELECT content as path FROM entity_text WHERE entity_text.entity_id = '${regulation.regulation_id}' AND entity_type = 'regulation';">
         <entity name="file" dataSource="ds-file" processor="TikaEntityProcessor" url="${entity_text.path}" format="text" onError="skip">
@@ -36,11 +53,21 @@
         </entity>
     </entity>
 </entity>
-<entity dataSource="ds-db" name="hearing" query="SELECT hearing.id as hearing_id,date,time,house,committee,place,state FROM hearing
-                    LEFT JOIN hidden_bills as hb ON hearing.id = hb.bill_id AND entity_type = 'hearing' AND client_id = ${dataimporter.request.core_client_id}
-                 WHERE hearing.id IN (SELECT DISTINCT(entity_id) as id FROM client_settings as cs
-                 INNER JOIN profile_match as pm ON cs.category=pm.pname AND cs.client_id = pm.client_id
-                 WHERE cs.client_id = '${dataimporter.request.core_client_id}' AND type = 'category' AND isfrontactive= 1 and entity_type = 'hearing') AND hidden_timestamp IS NULL;">
+<entity dataSource="ds-db" name="hearing" query="select a.id as hearing_id, a.date, a.time, a.house, a.committee, a.place, a.state, it.id as import_id, it.xml_import_timestamp
+from 
+(select hea.id, hea.date, hea.time, hea.house, hea.committee, hea.place, hea.state, max(ib.id) as import_bills_id 
+from hearing hea
+join import_bills ib on hea.id = ib.document_id
+join import_table it on ib.import_table_id = it.id
+where it.client_id = '${dataimporter.request.core_client_id}' and it.entity_type='hearing'
+GROUP BY hea.id
+) a 
+join import_bills ib on a.import_bills_id = ib.id
+join import_table it on ib.import_table_id = it.id
+LEFT JOIN hidden_bills as hb ON a.id = hb.bill_id AND hb.entity_type = 'hearing' AND hb.client_id = '${dataimporter.request.core_client_id}'
+where a.id IN (SELECT DISTINCT(entity_id) as id FROM client_settings as cs 
+                        INNER JOIN profile_match as pm ON cs.category=pm.pname AND cs.client_id = pm.client_id 
+                        WHERE cs.client_id = '${dataimporter.request.core_client_id}' AND type = 'category' AND isfrontactive= 1 and entity_type = 'hearing') AND hb.hidden_timestamp IS NULL;">
     <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${hearing.hearing_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='hearing';"></entity>
     <entity dataSource="ds-db" name="profile_match" query="SELECT id as pmid, pname,entity_type,entity_id FROM profile_match WHERE entity_type = 'hearing'
                     AND profile_match.entity_id = '${hearing.hearing_id}' AND client_id = '${dataimporter.request.core_client_id}'">

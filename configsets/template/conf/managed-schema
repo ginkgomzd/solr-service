@@ -209,7 +209,8 @@
   <field name="full_text_url" type="string" indexed="true" stored="true"/>
   <field name="sponsor_name" type="string" indexed="true" stored="true"/>
   <field name="sponsor_url" type="string" indexed="true" stored="true"/>
-
+  <field name="import_id" type="pint" indexed="true" stored="true"/>
+  <field name="xml_import_timestamp" type="pdate" indexed="true" stored="true"/>
   <field name="legislation_id" type="pint" indexed="true" stored="true"/>
   <field name="content" type="text_html" indexed="true" stored="true"/>
 
