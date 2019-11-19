@@ -22,6 +22,7 @@
         import.import_id = it.id
     ;">
     <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${legislation.legislation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='legislation';"></entity>
+    <entity dataSource="ds-db" name="hidden" query="SELECT IF (COUNT(id) = 0,0,1) as hidden FROM hidden_bills WHERE bill_id = '${legislation.legislation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='legislation';"></entity>
     <entity dataSource="ds-db" name="entity_text" query="SELECT content as path FROM entity_text WHERE entity_text.entity_id = '${legislation.external_id}';">
         <entity name="file" dataSource="ds-file" processor="TikaEntityProcessor" url="${entity_text.path}" format="text" onError="skip">
             <field column="text" name="content" />
@@ -57,6 +58,7 @@
         import.import_id = it.id
 ;">
     <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${regulation.regulation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='regulation';"></entity>
+    <entity dataSource="ds-db" name="hidden" query="SELECT IF (COUNT(id) = 0,0,1) as hidden FROM hidden_bills WHERE bill_id = '${regulation.regulation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='regulation';"></entity>
     <entity dataSource="ds-db" name="entity_text" query="SELECT content as path FROM entity_text WHERE entity_text.entity_id = '${regulation.regulation_id}' AND entity_type = 'regulation';">
         <entity name="file" dataSource="ds-file" processor="TikaEntityProcessor" url="${entity_text.path}" format="text" onError="skip">
             <field column="text" name="content" />
@@ -92,6 +94,7 @@
         import.import_id = it.id
 ;">
     <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${hearing.hearing_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='hearing';"></entity>
+    <entity dataSource="ds-db" name="hidden" query="SELECT IF (COUNT(id) = 0,0,1) as hidden FROM hidden_bills WHERE bill_id = '${hearing.hearing_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='hearing';"></entity>
     <entity dataSource="ds-db" name="profile_match" query="SELECT id as pmid, pname,entity_type,entity_id FROM profile_match WHERE entity_type = 'hearing'
                     AND profile_match.entity_id = '${hearing.hearing_id}' AND client_id = '${dataimporter.request.core_client_id}'">
         <entity dataSource="ds-db" name="profile_keyword" query="
