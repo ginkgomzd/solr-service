@@ -197,7 +197,8 @@
   <field name="_text_" type="text_general" indexed="true" stored="false"/>
   <field name="_version_" type="plong" indexed="false" stored="false"/>
   <field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
-  <field name="priority" type="boolean" indexed="true" stored="false"/>
+  <field name="priority" type="boolean" indexed="true" stored="true"/>
+  <field name="hidden" type="boolean" indexed="true" stored="true"/>
 
   <field name="external_id" type="string" indexed="true" stored="true"/>
   <field name="session" type="string" indexed="true" stored="true"/>
