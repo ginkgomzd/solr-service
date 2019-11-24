@@ -1,26 +1,5 @@
 <entity dataSource="ds-db" name="legislation" query="
-    SELECT 
-        leg.id as `legislation_id`, leg.session, leg.state, leg.type, 
-        leg.number, leg.external_id, leg.title, leg.abstract, 
-        leg.sponsor_name, leg.sponsor_url, 
-        leg.status_standardkey, leg.status_standard_val, leg.status_val,
-        it.id as import_id, it.xml_import_timestamp
-    FROM legislation leg 
-    INNER JOIN (
-        SELECT legislation.id as `bill_id`, max(imports.id) as `import_id`
-        FROM import_table imports
-        INNER JOIN import_bills ON 
-            imports.entity_type = 'legislation' 
-            AND imports.client_id = '${dataimporter.request.core_client_id}' 
-            AND imports.id = import_bills.import_table_id
-        INNER JOIN legislation ON 
-            import_bills.document_id = legislation.id
-        GROUP BY legislation.id
-    ) import ON 
-        leg.id = import.bill_id
-    INNER JOIN import_table it ON 
-        import.import_id = it.id
-    ;">
+    SELECT leg.id as `legislation_id`, leg.session, leg.state, leg.type, leg.number, leg.external_id, leg.title, leg.abstract, leg.sponsor_name, leg.sponsor_url, leg.status_standardkey, leg.status_standard_val, leg.status_val, it.id as import_id, it.xml_import_timestamp,import_bills.document_type as entity_type FROM legislation leg INNER JOIN import_bills ON import_bills.document_id = leg.id AND import_bills.document_type = 'legislation' INNER JOIN import_table AS it ON import_bills.import_table_id = it.id and it.client_id = '${dataimporter.request.core_client_id}';">
     <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${legislation.legislation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='legislation';"></entity>
     <entity dataSource="ds-db" name="hidden" query="SELECT IF (COUNT(id) = 0,0,1) as hidden FROM hidden_bills WHERE bill_id = '${legislation.legislation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='legislation';"></entity>
     <entity dataSource="ds-db" name="entity_text" query="SELECT content as path FROM entity_text WHERE entity_text.entity_id = '${legislation.external_id}';">
@@ -36,27 +15,12 @@
         </entity>
     </entity>
 </entity>
+
 <entity dataSource="ds-db" name="regulation" query="
-    SELECT 
-        reg.id as `regulation_id`, reg.external_id, reg.tracking_key, reg.code_citation,
+    SELECT reg.id as `regulation_id`, reg.external_id, reg.tracking_key, reg.code_citation,
         reg.state, reg.agency_name, reg.type, reg.state_action_type, reg.register_date, 
         it.id as `import_id`, it.xml_import_timestamp
-    FROM regulation reg
-    INNER JOIN (
-        SELECT regulation.id as `reg_id`, max(imports.id) as `import_id`
-        FROM import_table imports
-        INNER JOIN import_bills ON 
-            imports.entity_type = 'regulation' 
-            AND imports.client_id = '${dataimporter.request.core_client_id}'
-            AND imports.id = import_bills.import_table_id
-        INNER JOIN regulation ON
-            import_bills.document_id = regulation.id
-        GROUP BY regulation.id 
-    ) import ON
-        reg.id = import.reg_id
-    INNER JOIN import_table it ON
-        import.import_id = it.id
-;">
+    FROM regulation reg INNER JOIN import_bills ON import_bills.document_id = reg.id AND import_bills.document_type = 'regulation' INNER JOIN import_table AS it ON import_bills.import_table_id = it.id and it.client_id = '${dataimporter.request.core_client_id}';">
     <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${regulation.regulation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='regulation';"></entity>
     <entity dataSource="ds-db" name="hidden" query="SELECT IF (COUNT(id) = 0,0,1) as hidden FROM hidden_bills WHERE bill_id = '${regulation.regulation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='regulation';"></entity>
     <entity dataSource="ds-db" name="entity_text" query="SELECT content as path FROM entity_text WHERE entity_text.entity_id = '${regulation.regulation_id}' AND entity_type = 'regulation';">
@@ -73,26 +37,7 @@
     </entity>
 </entity>
 <entity dataSource="ds-db" name="hearing" query="
-    SELECT 
-        hrg.id as `hearing_id`, hrg.state, hrg.house, hrg.committee, 
-        hrg.date, hrg.time, hrg.place, 
-        it.id as import_id, it.xml_import_timestamp 
-    FROM hearing hrg
-    INNER JOIN (
-        SELECT hearing.id as `hrg_id`, max(imports.id) as import_id 
-        FROM import_table imports
-        INNER JOIN import_bills ON
-            imports.entity_type = 'hearing'
-            AND imports.client_id = '${dataimporter.request.core_client_id}'
-            AND imports.id = import_bills.import_table_id
-        INNER JOIN hearing ON
-            import_bills.document_id = hearing.id
-        GROUP BY hearing.id
-    ) import ON
-        hrg.id = import.hrg_id
-    INNER JOIN import_table it ON
-        import.import_id = it.id
-;">
+    SELECT hrg.id as `hearing_id`, hrg.state, hrg.house, hrg.committee, hrg.date, hrg.time, hrg.place, it.id as import_id, it.xml_import_timestamp FROM hearing hrg INNER JOIN import_bills ON import_bills.document_id = hrg.id AND import_bills.document_type = 'hearing' INNER JOIN import_table AS it ON import_bills.import_table_id = it.id and it.client_id = '${dataimporter.request.core_client_id}';">
     <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${hearing.hearing_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='hearing';"></entity>
     <entity dataSource="ds-db" name="hidden" query="SELECT IF (COUNT(id) = 0,0,1) as hidden FROM hidden_bills WHERE bill_id = '${hearing.hearing_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='hearing';"></entity>
     <entity dataSource="ds-db" name="profile_match" query="SELECT id as pmid, pname,entity_type,entity_id FROM profile_match WHERE entity_type = 'hearing'
