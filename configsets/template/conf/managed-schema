@@ -198,7 +198,6 @@
   <field name="_version_" type="plong" indexed="false" stored="false"/>
   <field name="id" type="string" multiValued="false" indexed="true" required="true" stored="true"/>
   <field name="priority" type="boolean" indexed="true" stored="true"/>
-  <field name="hidden" type="boolean" indexed="true" stored="true"/>
 
   <field name="external_id" type="string" indexed="true" stored="true"/>
   <field name="session" type="string" indexed="true" stored="true"/>
@@ -238,6 +237,8 @@
   <field name="profile_match_id" type="pint" indexed="true" stored="true"/>
   <field name="profile_match_client" type="text_general" indexed="true" stored="true"/>
   <field name="pname" type="text_general" indexed="true" stored="true"/>
+  <field name="active_profile" type="text_general" indexed="true" stored="true"/>
+  <field name="hidden_profile" type="text_general" indexed="true" stored="true"/>
   <field name="entity_type" type="enum_entity_type" indexed="true" stored="true"/>
   <field name="pm_entity_id" type="pint" indexed="true" stored="true"/>
   <field name="keyword" type="text_general" indexed="true" stored="true" multiValued="true"/>
