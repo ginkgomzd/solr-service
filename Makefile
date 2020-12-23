@@ -9,7 +9,7 @@ ping-solr-cmd = curl http://${SOLR_HOST}:${SOLR_PORT}/api/cores
 ping-solr = $(ping-solr-cmd) || false
 
 
-default: help
+default: ping
 
 install:
 	$(MAKE) -f install.mk install
