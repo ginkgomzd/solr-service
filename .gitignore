@@ -2,3 +2,4 @@ install_solr_service.sh
 arch/
 template_admin/
 configsets/template/conf/db-data-config.xml
+dist/

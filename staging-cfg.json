@@ -1,0 +1,8 @@
+{
+    "DB_User": "root",
+    "DB_Password": "password",
+    "DB_CMS_DB": "MSA_CMS",
+    "Solr_Host": "localhost",
+    "Solr_Port": 8983,
+    "Configset_Name": "capmon"
+}
