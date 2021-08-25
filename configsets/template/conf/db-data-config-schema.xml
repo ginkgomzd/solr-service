@@ -9,12 +9,12 @@
     INNER JOIN (
         SELECT legislation.id as `bill_id`, max(imports.id) as `import_id`
         FROM import_table imports
-        INNER JOIN import_bills ON 
-            import_bills.entity_type = 'legislation' 
+        INNER JOIN v_import_bills ON 
+            v_import_bills.entity_type = 'legislation' 
             AND imports.client_id = '${dataimporter.request.core_client_id}' 
-            AND imports.id = `import_bills`.`import_id`
+            AND imports.id = `v_import_bills`.`import_id`
         INNER JOIN legislation ON 
-            import_bills.entity_id = legislation.id
+            v_import_bills.entity_id = legislation.id
         GROUP BY legislation.id
     ) import ON 
         leg.id = import.bill_id
@@ -56,12 +56,12 @@ AND profile_match.entity_id = '${legislation.legislation_id}'">
     INNER JOIN (
         SELECT regulation.id as `reg_id`, max(imports.id) as `import_id`
         FROM import_table imports
-        INNER JOIN import_bills ON 
-            import_bills.entity_type = 'regulation' 
+        INNER JOIN v_import_bills ON 
+            v_import_bills.entity_type = 'regulation' 
             AND imports.client_id = '${dataimporter.request.core_client_id}'
-            AND imports.id = `import_bills`.`import_id`
+            AND imports.id = `v_import_bills`.`import_id`
         INNER JOIN regulation ON
-            import_bills.entity_id = regulation.id
+            v_import_bills.entity_id = regulation.id
         GROUP BY regulation.id 
     ) import ON
         reg.id = import.reg_id
@@ -101,12 +101,12 @@ AND profile_match.entity_id = '${regulation.regulation_id}'">
     INNER JOIN (
         SELECT hearing.id as `hrg_id`, max(imports.id) as import_id 
         FROM import_table imports
-        INNER JOIN import_bills ON
-            import_bills.entity_type = 'hearing'
+        INNER JOIN v_import_bills ON
+            v_import_bills.entity_type = 'hearing'
             AND imports.client_id = '${dataimporter.request.core_client_id}'
-            AND imports.id = `import_bills`.`import_id`
+            AND imports.id = `v_import_bills`.`import_id`
         INNER JOIN hearing ON
-            import_bills.entity_id = hearing.id
+            v_import_bills.entity_id = hearing.id
         GROUP BY hearing.id
     ) import ON hrg.id = import.hrg_id INNER JOIN import_table it ON import.import_id = it.id JOIN legislation ON legislation.external_id = hrg.legislation_external_id where exists (select 1 from vw_active_session act WHERE legislation.session = act.session_name and legislation.state = act.session_state limit 1);">
     <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${hearing.hearing_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='hearing';"></entity>
