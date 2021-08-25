@@ -32,21 +32,9 @@ list-collections: ping
 list-cores: ping
 	@${zk-cmd} ls /cores
 
-%.xml:
-	cp ${*}.tpl ${@}
-	$(REPLACE_TOKENS) -i ${@}
-
-##
-# $(eval export DB_DATA_CONFIG_SCHEMA = $(shell cat $${CONFIGSET_TEMPLATE}conf/db-data-config-schema.xml))
-# ...using make $(eval ...) does not work because the string is parsed by make, requiring additional escaping.
-# instead, we must source the included file within the same shell process as the sub-make.
-#
-deploy-configset: CONFIGSET_TEMPLATE := configsets/template/
+deploy-configset: export DB_DATA_CONFIG_SCHEMA := $(shell cat configsets/template/conf/db-data-config-schema.xml)
 deploy-configset: 
-	-rm ${CONFIGSET_TEMPLATE}conf/db-data-config.xml
-	DB_DATA_CONFIG_SCHEMA=$$(cat ${CONFIGSET_TEMPLATE}conf/db-data-config-schema.xml); \
-	export DB_DATA_CONFIG_SCHEMA; \
-	$(MAKE) ${CONFIGSET_TEMPLATE}conf/db-data-config.xml
+	$(REPLACE_TOKENS) < configsets/template/conf/db-data-config.tpl > configsets/template/conf/db-data-config.xml
 	# // TODO: this sucks
 	sudo rsync -r configsets/ /var/solr/data/configsets/
 	sudo chown -R solr:solr /var/solr/data/configsets
