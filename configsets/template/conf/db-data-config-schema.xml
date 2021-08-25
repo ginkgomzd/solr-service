@@ -8,23 +8,19 @@
             <field column="text" name="content" />
         </entity>
     </entity>
-    <entity dataSource="ds-db" name="profile_match" query="SELECT profile_match.id as pmid, profile.profile_name as pname,profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'legislation' AND profile.client_id =  '${dataimporter.request.core_client_id}' WHERE profile_match.entity_id = '${legislation.legislation_id}'">
+    <entity dataSource="ds-db" name="profile_match" query="
+        SELECT profile_match.id as pmid, profile.profile_name as pname,profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'legislation' AND profile.client_id =  '${dataimporter.request.core_client_id}' WHERE profile_match.entity_id = '${legislation.legislation_id}';">
         <entity dataSource="ds-db" name="profile_keyword" query="
-                        SELECT keyword FROM profile_keyword
-                        WHERE profile_keyword.profile_match_id= '${profile_match.pmid}'">
+            SELECT keyword FROM profile_keyword WHERE profile_keyword.profile_match_id= '${profile_match.pmid}';">
         </entity>
     </entity>
-    <entity dataSource="ds-db" name="profile_match" query="SELECT profile_match.id as pmid, profile.profile_name as hidden_profile, profile.entity_type,entity_id 
-FROM profile_match 
-JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'legislation' AND profile.client_id = '${dataimporter.request.core_client_id}' 
-WHERE EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1)
-AND profile_match.entity_id = '${legislation.legislation_id}'">
+    <entity dataSource="ds-db" name="profile_match" query="
+        SELECT profile_match.id as pmid, profile.profile_name as hidden_profile, profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'legislation' AND profile.client_id = '${dataimporter.request.core_client_id}' WHERE EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1) AND profile_match.entity_id = '${legislation.legislation_id}'
+        ;">
     </entity>
-    <entity dataSource="ds-db" name="profile_match" query="SELECT profile_match.id as pmid, profile.profile_name as active_profile, profile.entity_type,entity_id 
-FROM profile_match 
-JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'legislation' AND profile.client_id = '${dataimporter.request.core_client_id}' 
-WHERE NOT EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1)
-AND profile_match.entity_id = '${legislation.legislation_id}'">
+    <entity dataSource="ds-db" name="profile_match" query="
+        SELECT profile_match.id as pmid, profile.profile_name as active_profile, profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = legislation' AND profile.client_id = '${dataimporter.request.core_client_id}' WHERE NOT EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1) AND profile_match.entity_id = '${legislation.legislation_id}'
+    ;">
     </entity>
 </entity>
 
@@ -32,29 +28,31 @@ AND profile_match.entity_id = '${legislation.legislation_id}'">
     SELECT * FROM v_regs_need_search_index
     WHERE client_id = '${dataimporter.request.core_client_id}'
     ;">
-    <entity dataSource="ds-db" name="priority" query="SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${regulation.regulation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='regulation';"></entity>
-    <entity dataSource="ds-db" name="entity_text" query="SELECT url as path FROM text_file WHERE text_file.entity_id = '${regulation.regulation_id}' AND entity_type = 'regulation';">
+    <entity dataSource="ds-db" name="priority" query="
+        SELECT IF (COUNT(id) = 0,0,1) as priority FROM prioritized_bills WHERE bill_id = '${regulation.regulation_id}' AND client_id = '${dataimporter.request.core_client_id}' AND entity_type='regulation'
+        ;"></entity>
+    <entity dataSource="ds-db" name="entity_text" query="
+        SELECT url as path FROM text_file WHERE text_file.entity_id = '${regulation.regulation_id}' AND entity_type = 'regulation'
+        ;">
         <entity name="file" dataSource="ds-file" processor="TikaEntityProcessor" url="${entity_text.path}" format="text" onError="skip">
             <field column="text" name="content" />
         </entity>
     </entity>
-    <entity dataSource="ds-db" name="profile_match" query="SELECT profile_match.id as pmid, profile.profile_name as pname,profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'regulation' AND profile.client_id =  '${dataimporter.request.core_client_id}' WHERE profile_match.entity_id = '${regulation.regulation_id}'">
+    <entity dataSource="ds-db" name="profile_match" query="
+        SELECT profile_match.id as pmid, profile.profile_name as pname,profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'regulation' AND profile.client_id =  '${dataimporter.request.core_client_id}' WHERE profile_match.entity_id = '${regulation.regulation_id}'
+        ;">
         <entity dataSource="ds-db" name="profile_keyword" query="
-                        SELECT keyword FROM profile_keyword
-                        WHERE profile_keyword.profile_match_id= '${profile_match.pmid}'">
+            SELECT keyword FROM profile_keyword WHERE profile_keyword.profile_match_id= '${profile_match.pmid}'
+            ;">
         </entity>
     </entity>
-    <entity dataSource="ds-db" name="profile_match" query="SELECT profile_match.id as pmid, profile.profile_name as hidden_profile, profile.entity_type,entity_id 
-FROM profile_match 
-JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'regulation' AND profile.client_id = '${dataimporter.request.core_client_id}' 
-WHERE EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1)
-AND profile_match.entity_id = '${regulation.regulation_id}'">
+    <entity dataSource="ds-db" name="profile_match" query="
+        SELECT profile_match.id as pmid, profile.profile_name as hidden_profile, profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'regulation' AND profile.client_id = '${dataimporter.request.core_client_id}' WHERE EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1) AND profile_match.entity_id = '${regulation.regulation_id}'
+        ;">
     </entity>
-    <entity dataSource="ds-db" name="profile_match" query="SELECT profile_match.id as pmid, profile.profile_name as active_profile, profile.entity_type,entity_id 
-FROM profile_match 
-JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'regulation' AND profile.client_id = '${dataimporter.request.core_client_id}' 
-WHERE NOT EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1)
-AND profile_match.entity_id = '${regulation.regulation_id}'">
+    <entity dataSource="ds-db" name="profile_match" query="
+        SELECT profile_match.id as pmid, profile.profile_name as active_profile, profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'regulation' AND profile.client_id = '${dataimporter.request.core_client_id}' WHERE NOT EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1) AND profile_match.entity_id = '${regulation.regulation_id}'
+        ;">
     </entity>
 </entity>
 <entity dataSource="ds-db" name="hearing" query="
@@ -68,16 +66,12 @@ AND profile_match.entity_id = '${regulation.regulation_id}'">
                         WHERE profile_keyword.profile_match_id= '${profile_match.pmid}'">
         </entity>
     </entity>
-    <entity dataSource="ds-db" name="profile_match" query="SELECT profile_match.id as pmid, profile.profile_name as hidden_profile, profile.entity_type,entity_id 
-FROM profile_match 
-JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'hearing' AND profile.client_id = '${dataimporter.request.core_client_id}' 
-WHERE EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1)
-AND profile_match.entity_id = '${hearing.hearing_id}'">
+    <entity dataSource="ds-db" name="profile_match" query="
+        SELECT profile_match.id as pmid, profile.profile_name as hidden_profile, profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'hearing' AND profile.client_id = '${dataimporter.request.core_client_id}' WHERE EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1) AND profile_match.entity_id = '${hearing.hearing_id}'
+        ;">
     </entity>
-    <entity dataSource="ds-db" name="profile_match" query="SELECT profile_match.id as pmid, profile.profile_name as active_profile, profile.entity_type,entity_id 
-FROM profile_match 
-JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'hearing' AND profile.client_id = '${dataimporter.request.core_client_id}' 
-WHERE NOT EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1)
-AND profile_match.entity_id = '${hearing.hearing_id}'">
+    <entity dataSource="ds-db" name="profile_match" query="
+        SELECT profile_match.id as pmid, profile.profile_name as active_profile, profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'hearing' AND profile.client_id = '${dataimporter.request.core_client_id}' WHERE NOT EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1) AND profile_match.entity_id = '${hearing.hearing_id}'
+        ;">
     </entity>
 </entity>
