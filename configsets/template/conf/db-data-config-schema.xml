@@ -19,7 +19,7 @@
         ;">
     </entity>
     <entity dataSource="ds-db" name="profile_match" query="
-        SELECT profile_match.id as pmid, profile.profile_name as active_profile, profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = legislation' AND profile.client_id = '${dataimporter.request.core_client_id}' WHERE NOT EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1) AND profile_match.entity_id = '${legislation.legislation_id}'
+        SELECT profile_match.id as pmid, profile.profile_name as active_profile, profile.entity_type,entity_id FROM profile_match JOIN profile ON profile.id = profile_match.profile_id AND profile.entity_type = 'legislation' AND profile.client_id = '${dataimporter.request.core_client_id}' WHERE NOT EXISTS (SELECT 1 FROM  hidden_bills WHERE hidden_bills.profile_id = profile.id LIMIT 1) AND profile_match.entity_id = '${legislation.legislation_id}'
     ;">
     </entity>
 </entity>
